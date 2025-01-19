@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predictions List</title>
+    <link href="/css/output.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 font-sans">
+<style>
+    a {
+        background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1));
+    }
+</style>
+<div style = "margin-left:40%;" class="container mx-auto p-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Your Predictions</h1>
+
+    <!-- Display error message -->
+    <div th:if="${errorMessage}" class="text-red-500 mb-4" th:text="${errorMessage}"></div>
+
+    <!-- Display predictions -->
+    <div th:if="${predictions}">
+        <table class="table-auto w-full border-collapse border border-gray-200">
+            <thead>
+            <tr class="bg-gray-200">
+                <th class="border border-gray-300 px-4 py-2">ID</th>
+                <th class="border border-gray-300 px-4 py-2">Prediction</th>
+                <th class="border border-gray-300 px-4 py-2">Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="prediction : ${predictions}">
+                <td class="border border-gray-300 px-4 py-2" th:text="${prediction.id}"></td>
+                <td class="border border-gray-300 px-4 py-2" th:text="${prediction.predictionData}"></td>
+                <td class="border border-gray-300 px-4 py-2" th:text="${prediction.createdAt}"></td>
+                <td class="border border-gray-300 px-4 py-2" th:text="${prediction.predictionResult}"></td>
+
+            </tr>
+            <div th:each="prediction : ${predictions}" style="width: 150px;margin-bottom: 10px;" class="flex flex-col items-center space-y-4 mt-8">
+                <a th:href="@{/predict/{id}(id=${prediction.id})}"
+                   class="bg-indigo-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-indigo-600 transition duration-300 ease-in-out w-full sm:w-auto text-center">
+                    View Prediction
+                </a>
+            </div>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Prediction</title>
+    <!-- Tailwind CSS -->
+    <link href="/css/output.css" rel="stylesheet">
+    <style>
+        button {
+        background-color: rgb(59 130 246 / 1));
+    }
+    </style>
+    <script>
+        function getUserDetails() {
+            const userId = document.getElementById('userId').value;
+            if (userId) {
+                fetch(`/users/${userId}`)
+                    .then(response => response.json())
+                    .then(data => console.log('User Details:', data))
+                    .catch(error => console.error('Error fetching user details:', error));
+            } else {
+                alert('Please enter a User ID');
+            }
+        }
+
+        function getPredictionDetails() {
+            const predictionId = document.getElementById('predictionId').value;
+            if (predictionId) {
+                fetch(`/predict/${predictionId}`)
+                    .then(response => response.json())
+                    .then(data => console.log('Prediction Details:', data))
+                    .catch(error => console.error('Error fetching prediction details:', error));
+            } else {
+                alert('Please enter a Prediction ID');
+            }
+        }
+
+        function getPredictionsByUserId() {
+            const userId = document.getElementById('predictionsUserId').value;
+            if (userId) {
+                fetch(`/predict/user/${userId}`)
+                    .then(response => response.json())
+                    .then(data => console.log('Predictions by User:', data))
+                    .catch(error => console.error('Error fetching predictions by user:', error));
+            } else {
+                alert('Please enter a User ID');
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch("/moves")
+                .then(response => response.json())
+                .then(moves => {
+                    if (Array.isArray(moves) && moves.length > 0) {
+                        const randomMove = moves[Math.floor(Math.random() * moves.length)];
+                        const predictionInput = document.getElementById("predictionData");
+                        if (predictionInput) {
+                            predictionInput.value = randomMove;
+                        }
+                    }
+                })
+                .catch(error => console.error("Error fetching moves:", error));
+
+            const form = document.querySelector("form");
+            if (form) {
+                form.addEventListener("submit", function (event) {
+                    event.preventDefault();
+
+                    const token = localStorage.getItem("token");
+                    if (!token) {
+                        alert("Authorization token missing.");
+                        return;
+                    }
+
+                    const formData = new FormData(form);
+                    fetch("/predict/submit", {
+                        method: "POST",
+                        headers: {
+                            "Authorization": "Bearer " + token
+                        },
+                        body: formData
+                    })
+                    .then(response => response.text())
+                    .then(data => {
+                        window.location.href = "/predict/" + data;
+                        console.log('data', data);
+                    })
+                    .catch(error => console.error("Error:", error));
+                });
+            }
+        });
+    </script>
+</head>
+<body class="bg-gray-50 font-sans">
+<div style="gap:8px;margin-top:20px;flex-wrap:wrap;margin-left:30%;" class="flex flex-col items-center space-y-4 mt-8">
+    <a style= "width:200px;background-color: blue;" id="viewPredictionsLink" href="#"
+       class="bg-blue-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-blue-600 transition duration-300 ease-in-out w-full sm:w-auto text-center">
+        View All Predictions
+    </a>
+    <a style= "width:200px;background-color: blue;" id="viewUserLink" href="#"
+       class="bg-green-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-green-600 transition duration-300 ease-in-out w-full sm:w-auto text-center">
+        View User
+    </a>
+    <a style= "width:200px;background-color: blue;" id="resetPasswordLink" href="#"
+       class="bg-yellow-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-yellow-600 transition duration-300 ease-in-out w-full sm:w-auto text-center">
+        Reset Password
+    </a>
+</div>
+
+<script>
+    // Fetch userId from localStorage
+    const userId = localStorage.getItem('userId');
+
+    // Update the href attributes dynamically
+    if (userId) {
+        document.getElementById('viewPredictionsLink').href = `/predict/all/${userId}`;
+        document.getElementById('viewUserLink').href = `/users/${userId}`;
+        document.getElementById('resetPasswordLink').href = `/users/reset-password`;
+    } else {
+        console.log('User ID not found in local storage');
+    }
+</script>
+<div class="flex justify-center items-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Submit a Prediction</h1>
+
+        <form th:action="@{/predict/submit}" method="post">
+            <div class="mb-4">
+                <label for="predictionData" class="block text-gray-700 font-medium">Prediction:</label>
+                <input type="text" id="predictionData" name="predictionData" class="w-full p-3 mt-1 border border-gray-300 rounded-md" required />
+            </div>
+
+            <button type="submit" class="w-full p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200">Submit Prediction</button>
+        </form>
+
+        <div class="mt-4 text-center">
+            <a style= "padding:5px 5px; color:white;width:200px;background-color: blue;" href="/users/reset-password" class="rounded-lg text-blue-500 hover:underline">Forgot Password?</a>
+        </div>
+
+
+    </div>
+</div>
+
+</body>
+</html>

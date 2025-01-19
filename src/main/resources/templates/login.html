@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Login</title>
+    <!-- Tailwind CSS -->
+    <link href="/css/output.css" rel="stylesheet">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.querySelector("form");
+
+            if (form) {
+                form.addEventListener("submit", async function (event) {
+                    event.preventDefault(); // Prevent default form submission
+
+                    const formData = new FormData(form);
+                    const data = {
+                        email: formData.get("email"),
+                        password: formData.get("password")
+                    };
+                    console.log('login payload',data,form.action);
+
+                    try {
+                        const response = await fetch(form.action, {
+                            method: 'POST', // Using POST method
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(data) // Send the form data as JSON
+                        });
+                        console.log('response ',response,response.ok);
+
+
+                        if (response.ok) {
+                            const result = await response.json();
+                            console.log("result",result);
+                            localStorage.setItem("token", result.token); // Save userId to localStorage
+                            localStorage.setItem("userId", result.userId);
+                            alert("Login successful!");
+                            window.location.href = "/predict/submit";
+                        } else {
+                            const error = await response.text();
+                            alert("Login failed: " + error);
+                        }
+                    } catch (err) {
+                        console.error("Login error:", err);
+                        alert("An error occurred during login.");
+                    }
+                });
+            }
+        });
+    </script>
+</head>
+<body class="bg-gray-50 font-sans">
+
+<div class="flex justify-center items-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">User Login</h1>
+
+        <!-- Error Message -->
+        <div th:if="${message != null}" class="text-center text-red-500 mb-4" th:text="${message}"></div>
+
+        <!-- Login Form -->
+        <form th:action="@{/users/login}" method="post">
+            <div class="mb-4">
+                <label for="email" class="block text-gray-700 font-medium">Email:</label>
+                <input type="email" id="email" name="email" class="w-full p-3 mt-1 border border-gray-300 rounded-md" required/>
+            </div>
+
+            <div class="mb-4">
+                <label for="password" class="block text-gray-700 font-medium">Password:</label>
+                <input type="password" id="password" name="password" class="w-full p-3 mt-1 border border-gray-300 rounded-md" required/>
+            </div>
+
+            <button type="submit" class="w-full p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200">Login</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

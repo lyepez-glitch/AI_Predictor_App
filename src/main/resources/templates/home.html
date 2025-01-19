@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <!-- Link to the Tailwind CSS file (assuming output.css is generated from Tailwind) -->
+    <link href="/css/output.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-sans text-gray-900">
+<style>
+    a {
+        background-color: rgb(59 130 246 / 1));
+    }
+</style>
+<div style="margin-top: 20%;" class="container mx-auto p-8">
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800">Welcome to the Home Page</h1>
+        <p class="text-lg text-gray-600 mt-4">Please choose an option below to get started:</p>
+    </div>
+
+    <!-- Links to Login and Signup pages -->
+    <div  class="flex justify-center space-x-6 mt-8">
+        <a style="padding:5px 5px;margin-right:50px;background-color:blue;" th:href="@{/users/login}"
+           class="inline-block bg-blue-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-blue-600 transition duration-300 ease-in-out">
+            Login
+        </a>
+
+        <a th:href="@{/users/register}"
+           style="background-color:blue;padding:5px 5px;" class="inline-block bg-green-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-green-600 transition duration-300 ease-in-out">
+            Signup
+        </a>
+    </div>
+</div>
+
+</body>
+</html>

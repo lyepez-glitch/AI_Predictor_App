@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <!-- Tailwind CSS -->
+    <link href="/css/output.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 font-sans">
+
+<div class="flex justify-center items-center min-h-screen">
+    <div style="margin-right: 100px;" class="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">User Profile</h1>
+
+        <div th:if="${user != null}">
+            <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
+            <p><strong>Predictions Submitted:</strong> <span th:text="${user.predictions != null ? user.predictions.size() : 0}"></span></p>
+            <p th:if="${user.weight != null}">
+                <strong>Weight:</strong> <span th:text="${user.weight}"></span> kg
+            </p>
+
+            <!-- Conditional display for height -->
+            <p th:if="${user.height != null}">
+                <strong>Height:</strong> <span th:text="${user.height}"></span> cm
+            </p>
+
+            <!-- Conditional display for training habits -->
+            <p th:if="${user.trainingHabits != null}">
+                <strong>Training Habits:</strong> <span th:text="${user.trainingHabits}"></span>
+            </p>
+        </div>
+        <div th:if="${user == null}">
+            <p class="text-center text-red-500">User not found.</p>
+        </div>
+    </div>
+    <form th:action="@{/users/userDetails/{userId}(userId=${user.id})}" method="post" class="mt-6">
+        <input type="hidden" name="userId" th:value="${user.id}">
+        <div class="mb-4">
+            <label for="weight" class="block text-gray-700 font-bold mb-2">Weight (kg):</label>
+            <input type="number" id="weight" name="weight" class="w-full px-3 py-2 border rounded-md" required>
+        </div>
+        <div class="mb-4">
+            <label for="height" class="block text-gray-700 font-bold mb-2">Height (cm):</label>
+            <input type="number" id="height" name="height" class="w-full px-3 py-2 border rounded-md" required>
+        </div>
+        <div class="mb-4">
+            <label for="trainingHabits" class="block text-gray-700 font-bold mb-2">Training Habits:</label>
+            <textarea id="trainingHabits" name="trainingHabits" class="w-full px-3 py-2 border rounded-md" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">
+            Submit Prediction
+        </button>
+    </form>
+</div>
+
+</body>
+</html>

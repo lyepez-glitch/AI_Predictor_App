@@ -1,0 +1,12 @@
+aipredictor_high = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-chicago-1.oraclecloud.com))(connect_data=(service_name=g4163d5b5c22518_aipredictor_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+aipredictor_low = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-chicago-1.oraclecloud.com))(connect_data=(service_name=g4163d5b5c22518_aipredictor_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+aipredictor_medium = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-chicago-1.oraclecloud.com))(connect_data=(service_name=g4163d5b5c22518_aipredictor_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+aipredictor_tp = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-chicago-1.oraclecloud.com))(connect_data=(service_name=g4163d5b5c22518_aipredictor_tp.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+aipredictor_tpurgent = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-chicago-1.oraclecloud.com))(connect_data=(service_name=g4163d5b5c22518_aipredictor_tpurgent.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+
+
