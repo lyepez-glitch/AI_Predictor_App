@@ -18,7 +18,7 @@ public class UserService {
 
     public void registerUser(User user) {
         if (this.userRepository.findByEmail(user.getEmail()) != null) {
-            throw new IllegalArgumentException("Email already exists.");
+            throw new IllegalArgumentException("Email  already exists.");
         } else {
             user.setCreatedAt(LocalDateTime.now());
             this.userRepository.save(user);
