@@ -66,7 +66,7 @@ public class PredictionService {
                                 System.err.println("Response body: " + response.body().string());
                             }
 
-                            var7 = "Unable to generate prediction. Please try again.";
+                            var7 = "Unable to generate prediction. Try again.";
                             break label70;
                         }
 
