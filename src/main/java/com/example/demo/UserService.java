@@ -42,7 +42,7 @@ public class UserService {
     }
 
     public User getUser(Long id) {
-        return (User)this.userRepository.findById(id).orElse((Object)null);
+        return (User)this.userRepository.findById(id).orElse(null);
     }
 
     public void saveUser(User user) {

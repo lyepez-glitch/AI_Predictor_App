@@ -71,7 +71,7 @@ public class PredictionController {
 
     @GetMapping({"/all/{userId}"})
     public String getAllPredictions(@PathVariable Long userId, Model model) {
-        User user = (User)this.userRepository.findById(userId).orElse((Object)null);
+        User user = this.userRepository.findById(userId).orElse(null);
         if (user == null) {
             model.addAttribute("errorMessage", "User not found");
             return "predictions-list";

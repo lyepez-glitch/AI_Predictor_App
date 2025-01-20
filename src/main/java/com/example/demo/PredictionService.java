@@ -121,7 +121,7 @@ public class PredictionService {
     }
 
     public Prediction getPredictionById(Long id) {
-        return (Prediction)this.predictionRepository.findById(id).orElse((Object)null);
+        return (Prediction)this.predictionRepository.findById(id).orElse(null);
     }
 
     public List<Prediction> getAllPredictionsByUserId(Long userId) {
