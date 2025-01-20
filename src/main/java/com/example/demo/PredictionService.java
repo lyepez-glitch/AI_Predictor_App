@@ -60,7 +60,7 @@ public class PredictionService {
                 label71: {
                     try {
                         if (!response.isSuccessful()) {
-                            System.err.println("Response  code: " + response.code());
+                            System.err.println("Response code: " + response.code());
                             System.err.println("Response message: " + response.message());
                             if (response.body() != null) {
                                 System.err.println("Response body: " + response.body().string());
