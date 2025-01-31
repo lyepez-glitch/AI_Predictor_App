@@ -14,7 +14,7 @@
         <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Prediction Details</h1>
 
         <div th:if="${prediction != null}">
-            <p><strong>Prediction ID:</strong> <span th:text="${prediction.id}"></span></p>
+
             <span th:text="${#strings.isEmpty(prediction.predictionResult) ? 'No result available' : prediction.predictionResult}"></span>
 
             <!-- Kick Animation -->

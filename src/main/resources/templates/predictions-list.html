@@ -23,14 +23,14 @@
         <table class="table-auto w-full border-collapse border border-gray-200">
             <thead>
             <tr class="bg-gray-200">
-                <th class="border border-gray-300 px-4 py-2">ID</th>
+
                 <th class="border border-gray-300 px-4 py-2">Prediction</th>
                 <th class="border border-gray-300 px-4 py-2">Date</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="prediction : ${predictions}">
-                <td class="border border-gray-300 px-4 py-2" th:text="${prediction.id}"></td>
+
                 <td class="border border-gray-300 px-4 py-2" th:text="${prediction.predictionData}"></td>
                 <td class="border border-gray-300 px-4 py-2" th:text="${prediction.createdAt}"></td>
                 <td class="border border-gray-300 px-4 py-2" th:text="${prediction.predictionResult}"></td>

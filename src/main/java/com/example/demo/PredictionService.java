@@ -33,7 +33,7 @@ public class PredictionService {
     }
 
     public Prediction createPrediction(PredictionRequest predictionRequest) {
-        System.out.println("user id  " + predictionRequest.getUserId());
+
         User user = (User)this.userRepository.findById(predictionRequest.getUserId()).orElseThrow(() -> {
             return new IllegalArgumentException("User not found");
         });
