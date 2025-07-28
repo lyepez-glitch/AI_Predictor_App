@@ -21,7 +21,8 @@ COPY src/ ./src/
 RUN npx tailwindcss -i ./src/main/resources/static/css/input.css -o ./src/main/resources/static/css/output.css --minify
 
 # Build the Spring Boot app without running tests
-RUN ./mvnw clean package -DskipTests
+RUN echo "About to build with Maven" && ./mvnw -X -e clean package -DskipTests
+
 
 # ┌── Stage 2: Runtime with lightweight JRE
 FROM eclipse-temurin:17-jre-alpine
