@@ -6,33 +6,35 @@ RUN apk add --no-cache nodejs npm
 
 WORKDIR /app
 
-# Copy only necessary files first (better caching)
-COPY pom.xml mvnw .mvn/ ./
+# Copy Maven wrapper scripts and config explicitly for wrapper to work
+COPY mvnw mvnw.cmd ./
+COPY .mvn/ .mvn/
+COPY pom.xml ./
 
-# Pre-fetch dependencies
+# Make mvnw executable and pre-fetch dependencies
 RUN chmod +x mvnw && ./mvnw dependency:go-offline
 
-# Now copy source and frontend assets
+# Now copy source code and resources
 COPY src/ ./src/
 
-# Run Tailwind build
+# Run Tailwind CSS build
 RUN npx tailwindcss -i ./src/main/resources/static/css/input.css -o ./src/main/resources/static/css/output.css --minify
 
-# Build the Spring Boot app
+# Build the Spring Boot app without running tests
 RUN ./mvnw clean package -DskipTests
 
-# ┌── Stage 2: Runtime
+# ┌── Stage 2: Runtime with lightweight JRE
 FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
 
-# Copy built jar from previous stage
+# Copy the packaged jar from build stage
 COPY --from=build /app/target/demo-0.0.1-SNAPSHOT.jar app.jar
 
-# Allow port binding
+# Expose the default port
 EXPOSE 8080
 
-# Set OpenAI API Key as env variable (Render will inject it)
+# Set OpenAI API key environment variable (will be injected by Render)
 ENV OPENAI_API_KEY=""
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
