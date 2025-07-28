@@ -39,6 +39,7 @@ public class Prediction {
     private String predictionData;
     @Column(
             name = "PREDICTION_RESULT",
+            columnDefinition = "TEXT",
             nullable = false
     )
     private String predictionResult;

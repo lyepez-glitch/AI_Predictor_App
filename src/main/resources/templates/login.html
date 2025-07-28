@@ -7,8 +7,27 @@
     <!-- Tailwind CSS -->
     <link href="/css/output.css" rel="stylesheet">
     <script>
+
+        function getUserDetails(userId) {
+
+
+
+            if (userId) {
+                fetch(`/users/${userId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('User Details:',data);
+                        let {id,email,height,weight} = data;
+                    })
+                    .catch(error => console.error('Error fetching user details:', error));
+            } else {
+                alert('Please enter a User ID');
+            }
+        }
+
         document.addEventListener("DOMContentLoaded", function () {
             const form = document.querySelector("form");
+            const statusMsgEle = document.querySelector('#loginStatusMsg');
 
             if (form) {
                 form.addEventListener("submit", async function (event) {
@@ -37,11 +56,23 @@
 
                             localStorage.setItem("token", result.token); // Save userId to localStorage
                             localStorage.setItem("userId", result.userId);
-                            alert("Login successful!");
+<!--                            alert("Login successful!");-->
+
+                            statusMsgEle.textContent = "Logged in successfully!";
+                            statusMsgEle.classList.remove("text-red-500");
+                            statusMsgEle.classList.add("text-green-500");
+                            const user = getUserDetails(result.userId);
+                            localStorage.setItem("user",user);
+                            console.log('result',result);
                             window.location.href = "/predict/submit";
                         } else {
                             const error = await response.text();
-                            alert("Login failed: ");
+<!--                            alert("Login failed: ");-->
+
+                            statusMsgEle.textContent = "Login failed";
+                            statusMsgEle.classList.remove("text-green-500");
+                            statusMsgEle.classList.add("text-red-500");
+
                         }
                     } catch (err) {
                         console.error("Login error:");
@@ -54,26 +85,29 @@
 </head>
 <body class="bg-gray-50 font-sans">
 
-<div class="flex justify-center items-center min-h-screen">
-    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
-        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">User Login</h1>
+<div  class="bg-[#f9f9f9] flex justify-center  min-h-screen">
+    <div style="border:none;" class="xl:mt-[-25%] 2xl:mt-[-25%] xl:self-center xl:-mt-24 2xl:self-center 2xl:-mt-24  xl:max-w-sm xl:max-w-[40%] sm:mt-[0px] md:mt-[0px] lg:mt-[0px] xl:mt-[0px]  p-8 rounded-lg w-full max-w-[600px] ">
+        <h1 class="text-4xl font-normal text-[35px]  text-center mb-6"><span class="font-medium">Welcome back</span></h1>
 
         <!-- Error Message -->
         <div th:if="${message != null}" class="text-center text-red-500 mb-4" th:text="${message}"></div>
 
         <!-- Login Form -->
-        <form th:action="@{/users/login}" method="post">
-            <div class="mb-4">
-                <label for="email" class="block text-gray-700 font-medium">Email:</label>
-                <input type="email" id="email" name="email" class="w-full p-3 mt-1 border border-gray-300 rounded-md" required/>
+        <form style="padding-bottom: 20px;" class=" xl:w-[40vw] xl:left-[30%] xl:absolute 2xl:w-[40vw] 2xl:left-[30%] 2xl:absolute flex flex-col gap-[20px] items-center" th:action="@{/users/login}" method="post">
+            <div style="min-width:300px;" class="h-[60px] w-4/5  mb-4">
+<!--                <label for="email" class="block text-gray-700 font-medium">Email:</label>-->
+                <input style="border-radius:20px; padding-left:20px;" type="email" placeholder="email" id="email" name="email" class="rounded-[20px] pl-[20px] h-full w-full p-3 mt-1 border border-gray-300 rounded-md" required/>
             </div>
 
-            <div class="mb-4">
-                <label for="password" class="block text-gray-700 font-medium">Password:</label>
-                <input type="password" id="password" name="password" class="w-full p-3 mt-1 border border-gray-300 rounded-md" required/>
+            <div style="display: flex;flex-direction: column; gap: 5px;min-width:300px;" class="h-[100px] w-4/5  mb-4">
+                <a href="/users/reset-password" style="align-self: flex-end;text-decoration: none;">Forgot password?</a>
+
+<!--                <label for="password" class="block text-gray-700 font-medium">Password:</label>-->
+                <input style="border-radius:20px; padding-left:20px;" type="password" placeholder="password" id="password" name="password" class="rounded-[20px] pl-[20px] h-[60px] w-full p-3 mt-1 border border-gray-300 rounded-md" required/>
             </div>
 
-            <button type="submit" class="w-full p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200">Login</button>
+            <button style="border-radius:20px; font-weight: normal; background-color:black;color:#fff;" type="submit" class="w-[90%] ml-[30px] h-[55px]  p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200">Continue</button>
+            <div id="loginStatusMsg"></div>
         </form>
     </div>
 </div>

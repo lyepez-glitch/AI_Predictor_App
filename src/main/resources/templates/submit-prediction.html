@@ -6,22 +6,41 @@
     <title>Submit Prediction</title>
     <!-- Tailwind CSS -->
     <link href="/css/output.css" rel="stylesheet">
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <style>
         button {
         background-color: rgb(59 130 246 / 1));
     }
     </style>
     <script>
-        function getUserDetails() {
-            const userId = document.getElementById('userId').value;
-            if (userId) {
-                fetch(`/users/${userId}`)
-                    .then(response => response.json())
-                    .then(data => console.log('User Details:'))
-                    .catch(error => console.error('Error fetching user details:', error));
-            } else {
-                alert('Please enter a User ID');
+
+
+        function showProfileOverlay() {
+            const overlay = document.getElementById('profileOverlay');
+            if (overlay) {
+              overlay.classList.remove('hidden');
             }
+        }
+
+        function getUserDetails() {
+
+<!--            const userId = localStorage.getItem('userId');-->
+
+<!--            if (userId) {-->
+<!--                fetch(`/users/${userId}`)-->
+<!--                    .then(response => response.json())-->
+<!--                    .then(data => {-->
+<!--                        console.log('User Details:',data);-->
+<!--                        let {id,email,height,weight} = data;-->
+<!--                    })-->
+<!--                    .catch(error => console.error('Error fetching user details:', error));-->
+<!--            } else {-->
+<!--                alert('Please enter a User ID');-->
+<!--            }-->
+
         }
 
         function getPredictionDetails() {
@@ -49,6 +68,9 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
+            const statusMsgEle = document.querySelector('#loginStatusMsg');
+
+
             fetch("/moves")
                 .then(response => response.json())
                 .then(moves => {
@@ -62,12 +84,13 @@
                 })
                 .catch(error => console.error("Error fetching moves:", error));
 
-            const form = document.querySelector("form");
+            const form = document.querySelector("#predictionForm");
             if (form) {
                 form.addEventListener("submit", function (event) {
                     event.preventDefault();
-
-                    const token = localStorage.getItem("token");
+                    const modelToken = document.querySelector("#jwtToken")?.value;
+                    console.log("modelToken",modelToken);
+                    const token = localStorage.getItem("token") || modelToken;
                     if (!token) {
                         alert("Authorization token missing.");
                         return;
@@ -83,7 +106,13 @@
                     })
                     .then(response => response.text())
                     .then(data => {
-                        window.location.href = "/predict/" + data;
+<!--                        window.location.href = "/predict/" + data;-->
+                     console.log('data ',data);
+                     const answerDiv = document.querySelector(".answer");
+                    if (answerDiv) {
+                        answerDiv.textContent = data;
+                        location.reload();
+                    }
 
                     })
                     .catch(error => console.error("Error:", error));
@@ -93,50 +122,247 @@
     </script>
 </head>
 <body class="bg-gray-50 font-sans">
-<div style="gap:8px;margin-top:20px;flex-wrap:wrap;margin-left:30%;" class="flex flex-col items-center space-y-4 mt-8">
-    <a style= "width:200px;background-color: blue;" id="viewPredictionsLink" href="#"
-       class="bg-blue-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-blue-600 transition duration-300 ease-in-out w-full sm:w-auto text-center">
-        View All Predictions
-    </a>
-    <a style= "width:200px;background-color: blue;" id="viewUserLink" href="#"
-       class="bg-green-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-green-600 transition duration-300 ease-in-out w-full sm:w-auto text-center">
-        View User
-    </a>
-    <a style= "width:200px;background-color: blue;" id="resetPasswordLink" href="#"
-       class="bg-yellow-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-yellow-600 transition duration-300 ease-in-out w-full sm:w-auto text-center">
-        Reset Password
-    </a>
-</div>
+
 
 <script>
-    // Fetch userId from localStorage
-    const userId = localStorage.getItem('userId');
+    function setUserDetails() {
+            const userModelId = document.querySelector("#userModelId").value;
+            const userId = localStorage.getItem('userId') || userModelId;
 
-    // Update the href attributes dynamically
-    if (userId) {
-        document.getElementById('viewPredictionsLink').href = `/predict/all/${userId}`;
-        document.getElementById('viewUserLink').href = `/users/${userId}`;
-        document.getElementById('resetPasswordLink').href = `/users/reset-password`;
-    } else {
-        console.log('User ID not found in local storage');
-    }
+            console.log('userId',userId);
+
+            if (userId) {
+                fetch(`/users/${userId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('User Details:',data);
+                        let {id,email,height,weight,trainingHabits, predictions} = data;
+                        const emailText = document.querySelector(".emailText");
+                        const predictionsText = document.querySelector(".predictionsText");
+                        const weightText = document.querySelector(".weightText");
+                        const heightText = document.querySelector(".heightText");
+                        const trainingHabitsText = document.querySelector(".trainingHabitsText");
+                        if (emailText) emailText.textContent = email;
+                        if (predictionsText) predictionsText.textContent = predictions?.length || 0;
+                        if (weightText && weight != null) weightText.textContent = weight;
+                        if (heightText && height != null) heightText.textContent = height;
+                        if (trainingHabitsText) trainingHabitsText.textContent = trainingHabits || "N/A";
+                        document.getElementById('userId').value = id;
+<!--                        document.querySelector(".userDetailsForm").action = `/users/userDetails/${parseInt(id)}`;-->
+
+
+
+                    })
+                    .catch(error => console.error('Error fetching user details:', error));
+            } else {
+                alert('Please enter a User ID');
+            }
+
+        }
+    document.addEventListener("DOMContentLoaded", function () {
+       const statusMsgEle = document.querySelector('#loginStatusMsg');
+       setUserDetails();
+       const userModelId = document.querySelector("#userModelId").value;
+       console.log("userModelId",userModelId);
+       const userId = localStorage.getItem('userId') || userModelId;
+       document.querySelector(".userDetailsForm").addEventListener("submit", function (e) {
+
+           e.preventDefault();
+
+
+           const weight = document.querySelector("#weight").value;
+           const height = document.querySelector("#height").value;
+           const trainingHabits = document.querySelector("#trainingHabits").value;
+           console.log('parsed int user id',parseInt(userId));
+           const modelToken = document.querySelector("#jwtToken")?.value;
+           const token = localStorage.getItem("token") || modelToken;
+           fetch(`/users/userDetails/${parseInt(userId)}`, {
+               method: "POST",
+               headers: {
+                   "Content-Type": "application/x-www-form-urlencoded",
+                   "Authorization": "Bearer " + token
+
+               },
+               body: `weight=${weight}&height=${height}&trainingHabits=${encodeURIComponent(trainingHabits)}`
+           })
+           .then(res => res.json())
+           .then(data => {
+               console.log("Profile updated:", data);
+<!--               alert("Profile updated!");-->
+               statusMsgEle.textContent = "Profile updated successfully!";
+               statusMsgEle.classList.remove("text-red-500");
+               statusMsgEle.classList.add("text-green-500");
+               statusMsgEle.classList.add("text-center");
+               statusMsgEle.classList.add("mt-[30px]");
+               location.reload();
+           })
+           .catch(err => {
+               statusMsgEle.textContent = "Error updating profile";
+               statusMsgEle.classList.remove("text-green-500");
+               statusMsgEle.classList.add("text-red-500");
+               statusMsgEle.classList.add("text-center");
+               statusMsgEle.classList.add("mt-[30px]");
+               console.error("Error:", err);
+           })
+        })
+
+        console.log('userId', userId);
+        const viewUserLink = document.getElementById("viewUserLink");
+        console.log('userId ',userId,'viewUserLink ',viewUserLink);
+<!--        if (userId && viewUserLink) {-->
+<!--            viewUserLink.href = `/users/${userId}`;-->
+<!--        }-->
+
+        fetch(`/predict/all/${userId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then(predictions => {
+                console.log("All Predictions:", predictions);
+
+                const container = document.createElement("div");
+                container.classList.add("pl-5", "pr-5", "pb-5","items-center","flex", "flex-col", "gap-[30px]", "mt-6", "text-sm", "text-gray-700");
+
+                predictions.forEach(prediction => {
+                    const item = document.createElement("div");
+                    const predResult = document.createElement("div");
+                    const predData = document.createElement("div");
+                    predResult.classList.add("predResult");
+                    predData.classList.add("predData");
+                    item.classList.add("flex", "flex-col", "gap-[20px]","text-center");
+                    predResult.textContent = `${prediction.predictionResult}`
+                    predData.textContent = `${prediction.predictionData}`
+                    item.appendChild(predData);
+                    item.appendChild(predResult);
+                    container.appendChild(item);
+                });
+
+
+                const predDiv = document.querySelector(".predictions");
+                if (predDiv) {
+                    predDiv.appendChild(container);
+                } else {
+                    console.warn("No .predictions div found. Appending to body.");
+                    document.body.appendChild(container);
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching predictions:", error);
+            });
+    });
+
+
+
+
+
 </script>
-<div class="flex justify-center items-center min-h-screen">
-    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
-        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Submit a Prediction</h1>
 
-        <form th:action="@{/predict/submit}" method="post">
-            <div class="mb-4">
-                <label for="predictionData" class="block text-gray-700 font-medium">Prediction:</label>
-                <input type="text" id="predictionData" name="predictionData" class="w-full p-3 mt-1 border border-gray-300 rounded-md" required />
+<div id="profileOverlay" class="hidden w-screen h-screen backdrop-blur-md absolute overflow-auto bg-black/40" style="background-color:#fff;width: 100vw;
+    height: 100vh;
+    backdrop-filter: blur(6px);
+    position: absolute;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.40);">
+    <div style="background-color:#fff;"  class="xl:w-[50%] xl:left-[30%] xl:top-[5%] xl:max-h-screen 2xl:w-[50%] 2xl:left-[30%] 2xl:top-[5%] 2xl:max-h-screen xl:max-w-full 2xl:max-w-full w-[80%] xl:max-h-[70vh] 2xl:max-h-[70vh] xl:w-1/2 xl:left-[30%]  2x 2xl:w-1/2 2xl:left-[30%] left-[10%] overflow-auto max-w-full top-[100px] max-h-[70vh] z-[9999]  h-[85%]   pb-[40px] absolute  top-[100px] bg-white rounded-[15px] border border-gray-300  min-h-[90vh] shadow-md justify-start flex-col  flex  items-center ">
+        <div  class="xl:ml-[20%] xl:max-w-[60%] 2xl:ml-[20%] 2xl:max-w-[60%]  xl:shadow-none 2xl:shadow-none  xl:h-full  2xl:h-full shadow-none w-full flex-col flex bg-white p-8 rounded-lg sm:shadow-lg md:shadow-lg lg:shadow-lg xl:shadow-lg max-w-sm">
+            <h1 class="font-normal border-b border-gray-300 pb-[10px] w-full text-left   text-left text-3xl font-bold text-center text-gray-800 mb-6 ">User Profile</h1>
+
+            <div class="xl:ml-1/4 2xl:ml-1/4 xl:align-items:center 2xl:align-items:center flex flex-col items-start ">
+                <p class="flex flex-col gap-[10px]"><strong>Email</strong> <span class="emailText"></span></p>
+                <p class="mt-[10px] flex flex-col gap-[10px]"><strong>Predictions Submitted</strong> <span class="predictionsText"></span></p>
+                <p class="mt-[10px] flex flex-col gap-[10px]">
+                    <strong>Weight</strong>
+                    <div style="display:flex;gap:8px;">
+                        <span class="weightText"></span>
+                        <span>kg</span>
+                    </div>
+
+                </p>
+
+                <!-- Conditional display for height -->
+                <p class="mt-[10px] flex flex-col gap-[10px]">
+                    <strong>Height</strong>
+                    <div style="display:flex;gap:8px;">
+                        <span class="heightText"></span>
+                        <span>cm</span>
+                    </div>
+
+                </p>
+
+                <!-- Conditional display for training habits -->
+                <p class="mt-[10px] flex flex-col gap-[10px]">
+                    <strong>Training Habits</strong> <span class="trainingHabitsText"></span>
+                </p>
+            </div>
+            <form  method="post" class="xl:ml-0 2xl:ml-0 min-w-[130px] mt-[40px] ml-[20%] sm:ml-[25%] md:ml-[25%] lg:ml-[25%]   sm:mt-5 md:mt-5 lg:mt-5 xl:mt-5 max-w-[300px] userDetailsForm w-1/2">
+                <input class="xl:text-sm 2xl:text-sm" type="hidden" name="userId" id="userId">
+                <div class="mb-[10px] flex flex-col gap-[10px]">
+                    <!--                <label for="weight" class="block text-gray-700 font-bold mb-2">Weight (kg)</label>-->
+                    <input  placeholder="Weight (kg)" style="height: 40px;border: 1px solid black;border-radius: 8px;padding-left:20px;" type="number" id="weight" name="weight" class="text-xs placeholder-black w-full px-3 py-2 border rounded-md xl:text-sm 2xl:text-sm"required>
+                </div>
+                <div class="mb-[10px] flex flex-col gap-[10px]">
+                    <!--                <label for="height" class="block text-gray-700 font-bold mb-2">Height (cm)</label>-->
+                    <input placeholder="Height (cm)" style="height: 40px;border: 1px solid black;border-radius: 8px;padding-left:20px;" type="number" id="height" name="height" class="xl:text-sm 2xl:text-sm text-xs placeholder-black w-full px-3 py-2 border rounded-md" required>
+                </div>
+                <div class="mb-[10px] flex flex-col gap-[10px]">
+                    <!--                <label for="trainingHabits" class="block text-gray-700 font-bold mb-2">Training Habits</label>-->
+                    <textarea style="border-radius:8px;border: 1px solid black;padding-top:20px;padding-left:20px;" placeholder="Training Habits" id="trainingHabits" name="trainingHabits" class="xl:text-sm 2xl:text-sm text-xs placeholder-black w-full px-3 py-2 border rounded-md" rows="3" required></textarea>
+                </div>
+                <div style="" class="mt-[60px] w-full flex justify-center ">
+                    <button style="background-color:black;color:#fff;" type="submit" class="bg-black text-white rounded-[10px] w-[150px] h-[40px]  text-white py-2  hover:bg-blue-600">
+                        Edit Profile
+                    </button>
+                </div>
+                <div id="loginStatusMsg"></div>
+
+            </form>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<div class="bg-[#f9f9f9] flex justify-center items-center min-h-screen">
+    <div style="left:0; background-color: #444444; gap:8px;flex-wrap:wrap;" class=" xl:fixed xl:left-0 xl:w-[200px] xl:h-screen xl:fixed 2xl:left-0 2xl:w-[200px] 2xl:h-screen h-[70px] top-0 mt-0 w-full   fixed    justify-start  border border-gray-300 p-5 flex flex-col items-center space-y-4 ">
+
+        <div class="sidebarPredictionData"></div>
+        <button onClick="showProfileOverlay()" style= "width:200px; color:#fff;background-color: #444444;
+    border: none;" id="viewUserLink" href=''
+           class="xl:max-w-full 2xl:max-w-full shadow-none mt-0 pt-0 no-underline text-white bg-green-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-green-600 transition duration-300 ease-in-out w-full sm:w-auto text-center">
+            Profile
+        </button>
+<!--        <a style= "width:200px;background-color: blue;" id="resetPasswordLink" href="#"-->
+<!--           class="no-underline text-white bg-yellow-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-yellow-600 transition duration-300 ease-in-out w-full sm:w-auto text-center">-->
+<!--            Reset Password-->
+<!--        </a>-->
+    </div>
+    <div class=" xl:w-[90vw] xl:max-w-[100vw] xl:ml-[200px] xl:h-screen xl:mt-0 2xl:w-[90vw] 2xl:max-w-[100vw] 2xl:ml-[200px] 2xl:h-screen 2xl:mt-0 h-[70vh] mt-[50px] overflow-auto  flex flex-col items-center gap-2.5  flex flex-col items-center gap-2  bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
+        <h1 style="padding-left:20px;" class="xl:mt-[20%] 2xl:mt-[20%] mt-[0px] font-normal text-3xl  text-center text-gray-800 mb-6">How can I help?</h1>
+
+        <form id="predictionForm" style="gap:30px;" class="xl:w-1/2 2xl:w-1/2 mt-[20px] w-full w-1/2 flex flex-row gap-7" th:action="@{/predict/submit}" method="post">
+            <div class="w-full mb-4">
+                <input id="userModelId" type="hidden" name="userId" th:value="${user != null && user.id != null ? user.id : ''}"/>
+                <input id="jwtToken" type="hidden" th:value="${token != null ? token : ''}" />
+<!--                <label for="predictionData" class="block text-gray-700 font-medium">Prediction:</label>-->
+                <input placeholder="" style="border-radius:20px;height:50px;border-color:lightgray;padding-left:20px;" type="text" id="predictionData" name="predictionData" class="h-12 rounded-xl border border-gray-300 pl-6 w-full p-3 mt-1 border border-gray-300 rounded-md" required />
             </div>
 
-            <button type="submit" class="w-full p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200">Submit Prediction</button>
+            <button style="width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: black;
+    color: #fff;" type="submit" class="w-full p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200"><i class="fa-solid fa-arrow-up"></i></button>
         </form>
 
-        <div class="mt-4 text-center">
-            <a style= "padding:5px 5px; color:white;width:200px;background-color: blue;" href="/users/reset-password" class="rounded-lg text-blue-500 hover:underline">Forgot Password?</a>
-        </div>
+        <div class="xl:w-[80%] 2xl:w-[80%] mt-[40px] w-full w-[50vw] bg-[#f9f9f9] flex justify-center  text-[20px] font-normal predictions"></div>
+        <div style="max-width: 60%;" class="mt-[50px] text-[20px] font-normal answer"></div>
+
+
 
 
     </div>

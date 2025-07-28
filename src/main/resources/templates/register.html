@@ -7,33 +7,34 @@
     <!-- Tailwind CSS -->
     <link href="/css/output.css" rel="stylesheet">
 </head>
-<body class="bg-gray-50 font-sans">
+<body class="overflow-auto bg-gray-50 font-sans">
 
-<div class="flex justify-center items-center min-h-screen">
-    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
-        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Register a New User</h1>
+<div class="overflow-auto bg-[#f9f9f9] flex justify-center items-center min-h-screen">
+    <div style="border:1px solid lightgray;" class=" xl:justify-center 2xl:justify-center xl:max-h-[55vh] 2xl:max-h-[55vh] max-h-[95vh]  overflow-auto bg-[#f9f9f9] sm:mt-[0px] md:mt-[0px] lg:mt-[0px] xl:mt-[0px]  xl:max-h-[80vh] flex flex-col items-center h-screen  p-8 rounded-lg shadow-lg w-full max-w-sm">
+        <h1 style="font-weight:500;" class="font-medium text-3xl flex flex-col items-center text-center text-gray-800 mb-6">Create an account</h1>
 
         <!-- Error Message -->
         <div th:if="${message != null}" class="text-center text-red-500 mb-4" th:text="${message}"></div>
 
         <!-- Registration Form -->
-        <form th:action="@{/users/register}" method="post" th:object="${user}">
+        <form style="padding-bottom:20px;min-width:300px;" class="w-[60%] flex flex-col gap-[20px] pb-5" th:action="@{/users/register}" method="post" th:object="${user}">
             <div class="mb-4">
-                <label for="email" class="block text-gray-700 font-medium">Email:</label>
-                <input type="email" id="email" th:field="*{email}" class="w-full p-3 mt-1 border border-gray-300 rounded-md" required/>
+<!--                <label for="email" class="block text-gray-700 font-medium">Email:</label>-->
+                <input type="email" id="email" placeholder="email" th:field="*{email}" class=" h-[60px] rounded-[20px] w-full p-3 mt-1 border border-gray-300 pl-[20px]" required/>
             </div>
 
             <div class="mb-4">
-                <label for="username" class="block text-gray-700 font-medium">Username:</label>
-                <input type="text" id="username" th:field="*{username}" class="w-full p-3 mt-1 border border-gray-300 rounded-md" required />
+<!--                <label for="username" class="block text-gray-700 font-medium">Username:</label>-->
+                <input placeholder="username" type="text" id="username" th:field="*{username}" class=" h-[60px] rounded-[20px] w-full p-3 mt-1 border border-gray-300 pl-[20px]" required />
             </div>
 
             <div class="mb-4">
-                <label for="password" class="block text-gray-700 font-medium">Password:</label>
-                <input type="password" id="password" th:field="*{password}" class="w-full p-3 mt-1 border border-gray-300 rounded-md" required/>
+<!--                <label for="password" class="block text-gray-700 font-medium">Password:</label>-->
+                <input type="password" placeholder="password" id="password" th:field="*{password}" class=" h-[60px] rounded-[20px] w-full p-3 mt-1 border border-gray-300 pl-[20px]" required/>
             </div>
 
-            <button type="submit" class="w-full p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200">Register</button>
+            <button style="background-color: black;
+    color: #fff;" type="submit" class="bg-black rounded-[20px] h-[50px] w-full p-3 text-white rounded-md hover:bg-blue-600 transition duration-200">Continue</button>
         </form>
     </div>
 </div>

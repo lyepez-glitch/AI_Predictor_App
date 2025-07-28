@@ -6,6 +6,7 @@
     <title>Home</title>
     <!-- Link to the Tailwind CSS file (assuming output.css is generated from Tailwind) -->
     <link href="/css/output.css" rel="stylesheet">
+
 </head>
 <body class="bg-gray-100 font-sans text-gray-900">
 <style>
@@ -13,24 +14,84 @@
         background-color: rgb(59 130 246 / 1));
     }
 </style>
-<div style="margin-top: 20%;" class="container mx-auto p-8">
-    <div class="text-center mb-8">
-        <h1 class="text-4xl font-bold text-gray-800">Welcome to the Home Page</h1>
-        <p class="text-lg text-gray-600 mt-4">Please choose an option below to get started:</p>
+<div style="margin: 0;
+    width: 100%;
+    height: 100vh;
+    max-width: 100%;
+    max-height: 100%;
+    display: flex
+;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    background-color: #f9f9f9;" class="homeWrapper m-0 w-full h-screen max-w-full max-h-full flex justify-center items-start flex-wrap bg-[#f9f9f9] container mx-auto p-8">
+    <div style="position: absolute;
+        left: 30px;
+        top: 30px;
+        font-weight: bold;
+        font-size: 20px;" class="predictorHdr w-full absolute left-[30px] top-[30px] font-bold text-5xl">Predictor</div>
+    <div  class="xl:absolute xl:top-[20%] 2xl:absolute 2xl:top-[20%]  mt-[30px] sm:mt-[50px] md:mt-[50px] lg:mt-[50px]   welcomeBackCont">
+        <div style="width: 100vw;
+        margin-bottom: 20px;" class="w-screen mb-[20px] welcomeBack text-center mb-8 mt-[10px] sm:mt-[0px] md:mt-[0px] lg:mt-[0px]">
+            <h1 style="font-size: 40px;
+    font-weight: normal;" class="welcomeBackHdr text-[40px] font-normal text-4xl font-bold text-gray-800">Welcome back</h1>
+            <!--        <p class="text-lg text-gray-600 mt-4">Please choose an option below to get started:</p>-->
+        </div>
+        <!-- Links to Login and Signup pages -->
+        <div style="display: flex;
+     flex-direction: column;
+     justify-content: center;
+     align-items: center;
+     gap: 20px;
+     align-self: center;
+
+     width: 100%;" class="linksCont flex w-full flex-col justify-center items-center gap-[20px] self-center flex justify-center space-x-6 mt-8 sm:mt-[0px] md:mt-[0px] lg:mt-[0px">
+            <a style="margin: 0;
+        width: 40%;
+        border-radius: 20px;
+        height: 70px;
+        /* background-color: #fff; */
+        color: black;
+        border: 1px solid lightgray;
+<!--        padding-left: 100px;-->
+        box-shadow: none;
+        align-items: center;
+        justify-content: center;
+        max-width:500px;
+        min-width:250px;
+
+
+        background-color: #f9f9f9;" th:href="@{/users/login}"
+               class="flex no-underline  bg-blue-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-blue-600 transition duration-300 ease-in-out">
+                Continue
+            </a>
+
+            <a th:href="@{/users/register}"
+
+               style=" padding: 5px 5px;
+        margin: 0;
+        width: 40%;
+        border-radius: 20px;
+        height: 70px;
+        background-color: #fff;
+        color: black;
+        border: 1px solid lightgray;
+<!--        padding-left: 100px;-->
+        box-shadow: none;
+        align-items: center;
+        justify-content: center;
+       padding-top:0px;
+       max-width:500px;
+       min-width:250px;
+        background-color: #f9f9f9;" class="flex pt-0 items-center no-underline signUpLink bg-green-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-green-600 transition duration-300 ease-in-out">
+                Signup
+            </a>
+        </div>
     </div>
 
-    <!-- Links to Login and Signup pages -->
-    <div  class="flex justify-center space-x-6 mt-8">
-        <a style="padding:5px 5px;margin-right:50px;background-color:blue;" th:href="@{/users/login}"
-           class="inline-block bg-blue-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-blue-600 transition duration-300 ease-in-out">
-            Login
-        </a>
 
-        <a th:href="@{/users/register}"
-           style="background-color:blue;padding:5px 5px;" class="inline-block bg-green-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-green-600 transition duration-300 ease-in-out">
-            Signup
-        </a>
-    </div>
+
+
 </div>
 
 </body>

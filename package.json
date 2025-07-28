@@ -1,0 +1,26 @@
+{
+  "name": "demo-7-auth",
+  "version": "1.0.0",
+  "description": "https://platform.openai.com/api-keys export OPENAI_API_KEY=your_actual_api_key_here npx tailwindcss -i ./src/main/resources/static/css/styles.css -o ./src/main/resources/static/css/output.css --minify mvn clean package java -jar target/demo-0.0.1-SNAPSHOT.jar",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lyepez-glitch/AI_Predictor_App.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lyepez-glitch/AI_Predictor_App/issues"
+  },
+  "homepage": "https://github.com/lyepez-glitch/AI_Predictor_App#readme",
+  "devDependencies": {
+    "tailwindcss": "^4.1.11"
+  },
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.11"
+  }
+}

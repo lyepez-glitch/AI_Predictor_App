@@ -7,16 +7,11 @@ package com.example.demo;
 
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping({"/users"})
@@ -36,18 +31,38 @@ public class UserController {
         return "login";
     }
 
-    @PostMapping({"/userDetails/{userId}"})
-    public String submitUserDetails(@PathVariable Long userId, @RequestParam double weight, @RequestParam double height, @RequestParam String trainingHabits, Model model) {
-        User user = this.userService.getUser(userId);
+//    @PostMapping({"/userDetails/{userId}"})
+//    public String submitUserDetails(@PathVariable Long userId, @RequestParam double weight, @RequestParam double height, @RequestParam String trainingHabits, Model model) {
+//        User user = this.userService.getUser(userId);
+//        if (user != null) {
+//            user.setWeight(weight);
+//            user.setHeight(height);
+//            user.setTrainingHabits(trainingHabits);
+//            this.userService.saveUser(user);
+//        }
+//
+//        model.addAttribute("user", user);
+//        return "view-user";
+//    }
+
+    @PostMapping("/userDetails/{userId}")
+    @ResponseBody
+    public ResponseEntity<?> submitUserDetails(
+            @PathVariable Long userId,
+            @RequestParam double weight,
+            @RequestParam double height,
+            @RequestParam String trainingHabits) {
+
+        User user = userService.getUser(userId);
         if (user != null) {
             user.setWeight(weight);
             user.setHeight(height);
             user.setTrainingHabits(trainingHabits);
-            this.userService.saveUser(user);
+            userService.saveUser(user);
+            return ResponseEntity.ok(new UserDTO(user));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
-
-        model.addAttribute("user", user);
-        return "view-user";
     }
 
     @PostMapping({"/login"})
@@ -87,22 +102,57 @@ public class UserController {
     @PostMapping({"/reset-password"})
     public String resetPassword(@RequestParam String email, @RequestParam String newPassword, Model model) {
         if (this.userService.resetPassword(email, newPassword)) {
+            User user = userService.getUserByEmail(email);
             model.addAttribute("message", "Password reset successfully.");
-            return "redirect:/predict/submit";
+//            return "redirect:/predict/submit";
+            if(user != null && user.getId() != null){
+                System.out.println("Type: " + user.getId().getClass().getSimpleName());
+                String token = this.jwtUtil.generateToken(email);
+                return "redirect:/predict/submit?userId=" + user.getId() + "&token=" + token;
+            }else{
+                return "redirect:/predict/submit";
+            }
+
         } else {
             return "Email not found.";
         }
     }
 
-    @GetMapping({"/{id}"})
-    public String getUser(@PathVariable Long id, Model model) {
-        User user = this.userService.getUser(id);
-        if (user != null) {
-            model.addAttribute("user", user);
-            return "view-user";
-        } else {
-            model.addAttribute("message", "User not found.");
-            return "view-user";
-        }
+
+
+//    @GetMapping({"/{id}"})
+//    @ResponseBody
+//    public User getUser(@PathVariable Long id, Model model) {
+//        return userService.getUser(id);
+////        User user = this.userService.getUser(id);
+////        if (user != null) {
+////            model.addAttribute("user", user);
+////            return "view-user";
+////        } else {
+////            model.addAttribute("message", "User not found.");
+////            return "view-user";
+////        }
+//    }
+
+//    @GetMapping("/{id}")
+//    @ResponseBody
+//    public UserDTO getUser(@PathVariable Long id) {
+//        User user = userService.getUser(id);
+//        return new UserDTO(user);
+//    }
+
+
+//    @GetMapping("/users/{id}")
+//    public UserDTO getUser(@PathVariable Long id) {
+//        User user = userService.findById(id);
+//        return new UserDTO(user); // map manually or use ModelMapper
+//    }
+
+    @GetMapping("/{id}")
+    @ResponseBody
+    public UserDTO getUser(@PathVariable Long id) {
+        User user = userService.getUser(id);
+        return new UserDTO(user);
     }
+
 }

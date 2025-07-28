@@ -112,6 +112,7 @@ public class PredictionService {
                 response.close();
             }
 
+            System.out.println("var7 " + var7);
             return var7;
         } catch (IOException var13) {
             IOException e = var13;
