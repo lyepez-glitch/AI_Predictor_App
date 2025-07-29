@@ -24,7 +24,7 @@ COPY src/ src/
 RUN npx tailwindcss -i ./src/main/resources/static/css/input.css -o ./src/main/resources/static/css/output.css --minify
 
 # Package the Spring Boot app without tests
-RUN ./mvnw clean package -DskipTests -e -X
+RUN ./mvnw clean  -DskipTests -e -X
 
 
 # ┌── Stage 2: Runtime with lightweight JRE
