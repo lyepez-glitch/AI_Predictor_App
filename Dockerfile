@@ -13,8 +13,7 @@ COPY pom.xml ./
 
 # Make mvnw executable and pre-fetch dependencies
 RUN chmod +x mvnw
-
-RUN ./mvnw dependency:go-offline -e -X
+RUN ["./mvnw", "dependency:go-offline", "-e", "-X"]
 
 # Now copy source code and resources
 COPY src/ ./src/
