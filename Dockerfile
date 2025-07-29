@@ -17,7 +17,10 @@ RUN chmod +x mvnw
 
 # Now copy the full source
 COPY src/ src/
+COPY package.json package-lock.json ./
 
+# Install node modules
+RUN npm install
 # Run Tailwind CSS build (ensure Tailwind config is present if needed)
 RUN npx tailwindcss -i ./src/main/resources/static/css/input.css -o ./src/main/resources/static/css/output.css --minify
 
