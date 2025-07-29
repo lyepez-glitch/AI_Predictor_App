@@ -6,23 +6,25 @@ RUN apk add --no-cache nodejs npm
 
 WORKDIR /app
 
-# Copy Maven wrapper scripts and config explicitly for wrapper to work
-COPY mvnw mvnw.cmd ./
-COPY .mvn/wrapper .mvn/wrapper
-COPY pom.xml ./
+# Copy entire Maven wrapper directory and scripts
+COPY .mvn/ .mvn/
+COPY mvnw mvnw
+COPY pom.xml .
 
-# Make mvnw executable and pre-fetch dependencies
+# Make wrapper executable
 RUN chmod +x mvnw
-RUN ["./mvnw", "dependency:go-offline", "-e", "-X"]
 
-# Now copy source code and resources
-COPY src/ ./src/
+# Pre-fetch dependencies
+RUN ./mvnw dependency:go-offline -e -X
 
-# Run Tailwind CSS build
+# Now copy the full source
+COPY src/ src/
+
+# Run Tailwind CSS build (ensure Tailwind config is present if needed)
 RUN npx tailwindcss -i ./src/main/resources/static/css/input.css -o ./src/main/resources/static/css/output.css --minify
 
-# Build the Spring Boot app without running tests
-RUN echo "About to build with Maven" && ./mvnw -X -e clean package -DskipTests
+# Package the Spring Boot app without tests
+RUN ./mvnw clean package -DskipTests -e -X
 
 
 # ┌── Stage 2: Runtime with lightweight JRE
@@ -33,10 +35,8 @@ WORKDIR /app
 # Copy the packaged jar from build stage
 COPY --from=build /app/target/demo-0.0.1-SNAPSHOT.jar app.jar
 
-# Expose the default port
 EXPOSE 8080
 
-# Set OpenAI API key environment variable (will be injected by Render)
 ENV OPENAI_API_KEY=""
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
