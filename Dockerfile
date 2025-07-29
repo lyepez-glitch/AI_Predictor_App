@@ -14,8 +14,6 @@ COPY pom.xml .
 # Make wrapper executable
 RUN chmod +x mvnw
 
-# Pre-fetch dependencies
-RUN ./mvnw dependency:go-offline -e -X
 
 # Now copy the full source
 COPY src/ src/
