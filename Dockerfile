@@ -8,7 +8,7 @@ WORKDIR /app
 
 # Copy Maven wrapper scripts and config explicitly for wrapper to work
 COPY mvnw mvnw.cmd ./
-COPY .mvn/ .mvn/
+COPY .mvn/wrapper .mvn/wrapper
 COPY pom.xml ./
 
 # Make mvnw executable and pre-fetch dependencies
